@@ -23,44 +23,30 @@ def generate_config_slice(numconf : int,
     GS = list()
 
     # Create 4 configuration of a slice
-    if ('C1' in config_list):
+    if ('k1' in config_list):
         k1 = nx.DiGraph()
-        k1.add_node(0,cap=FSMP.sfc.NodeResource(20,20,20))
-        k1.add_node(1,cap=FSMP.sfc.NodeResource(15,15,15))
-        k1.add_node(2,cap=FSMP.sfc.NodeResource(20,20,20))
-        k1.add_node(3,cap=FSMP.sfc.NodeResource(15,15,15))
+        k1.add_node(0,cap=FSMP.sfc.NodeResource(10,10,10))
+        k1.add_node(1,cap=FSMP.sfc.NodeResource(10,10,10))
+        k1.add_node(2,cap=FSMP.sfc.NodeResource(10,10,10))
+        k1.add_node(3,cap=FSMP.sfc.NodeResource(20,20,20))
 
-        k1.add_edge(0,1,cap=FSMP.sfc.LinkResource(15))
-        k1.add_edge(1,2,cap=FSMP.sfc.LinkResource(15))
-        k1.add_edge(2,3,cap=FSMP.sfc.LinkResource(15))
+        k1.add_edge(0,1,cap=FSMP.sfc.LinkResource(10))
+        k1.add_edge(1,2,cap=FSMP.sfc.LinkResource(10))
+        k1.add_edge(2,3,cap=FSMP.sfc.LinkResource(10))
     
         GS.append(k1)
         count-=1
 
-    if ('C2' in config_list):
-        k2 = nx.DiGraph()
-        k2.add_node(0,cap=FSMP.sfc.NodeResource(20,20,20))
-        k2.add_node(1,cap=FSMP.sfc.NodeResource(10,10,10))
-        k2.add_node(2,cap=FSMP.sfc.NodeResource(5,5,5))
-        k2.add_node(3,cap=FSMP.sfc.NodeResource(5,5,5))
-
-        k2.add_edge(0,1,cap=FSMP.sfc.LinkResource(10))
-        k2.add_edge(1,2,cap=FSMP.sfc.LinkResource(5))
-        k2.add_edge(1,3,cap=FSMP.sfc.LinkResource(5))
-
-        GS.append(k2)
-        count-=1
-    
-    if ('C3' in config_list) :
+    if ('k2' in config_list) :
         k3 = nx.DiGraph()
-        k3.add_node(0,cap=FSMP.sfc.NodeResource(20,20,20))
-        k3.add_node(1,cap=FSMP.sfc.NodeResource(10,10,10))
+        k3.add_node(0,cap=FSMP.sfc.NodeResource(10,10,10))
+        k3.add_node(1,cap=FSMP.sfc.NodeResource(5,5,5))
         k3.add_node(2,cap=FSMP.sfc.NodeResource(20,20,20))
-        k3.add_node(3,cap=FSMP.sfc.NodeResource(10,10,10))
+        k3.add_node(3,cap=FSMP.sfc.NodeResource(5,5,5))
 
         k3.add_edge(0,1,cap=FSMP.sfc.LinkResource(10))
-        k3.add_edge(1,2,cap=FSMP.sfc.LinkResource(20))
-        k3.add_edge(3,2,cap=FSMP.sfc.LinkResource(20))
+        k3.add_edge(1,2,cap=FSMP.sfc.LinkResource(15))
+        k3.add_edge(3,2,cap=FSMP.sfc.LinkResource(15))
         k3.add_edge(0,3,cap=FSMP.sfc.LinkResource(10))
         
         GS.append(k3)
@@ -77,12 +63,18 @@ def generate_config_slice(numconf : int,
     
     This function is used to create physical network graph
 """
-def CreatePHYGraph():
+def CreatePHYGraph(phyname : str):
+    if phyname == "Abilene":
+        gml_path = "./data/__internals__/SndLib/abilene.gml"
+    elif phyname == "Atlanta":
+        gml_path = "./data/__internals__/SndLib/atlanta.gml"
+    else :
+        gml_path = "./data/__internals__/SndLib/polska.gml"
     # Create a generator
     phy_generator = FSMP.phy.fromgml_rw.FromGmlGraphGenerator(
-        gml_path="./data/__internals__/SndLib/abilene.gml",
-        nodecap=[40,40,40],
-        linkcap=[40]
+        gml_path=gml_path,
+        nodecap=[20,20,20],
+        linkcap=[20]
     )
 
     PHY = phy_generator.Generate()
