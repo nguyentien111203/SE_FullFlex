@@ -6,6 +6,7 @@ from openpyxl import Workbook
 
 def write_data_test(numslices_list : list,
                     allconfig_list : list,
+                    phyname_list : list,
                     filename):
     """
     Writes data to a CSV file.
@@ -21,23 +22,27 @@ def write_data_test(numslices_list : list,
 
         for numslices in numslices_list:
             for config_list in allconfig_list:
-                accept_slices, runtime, rate = Sf.SolveSE_FullFelx(numslices=numslices,config_list=config_list)
-                accept_rate = accept_slices/numslices
-                # Write the data to the CSV file
-                writer.writerow([str(numslices),
+                for phyname in phyname_list:
+                    accept_slices,objvalue, runtime, rate, phyname = Sf.SolveSE_FullFelx(numslices=numslices,config_list=config_list,phyname=phyname)
+                    accept_rate = accept_slices/numslices
+                    # Write the data to the CSV file
+                    writer.writerow([str(numslices),
+                                objvalue,
                                 config_list,
                                 accept_slices,
                                 accept_rate,
                                 runtime,
-                                rate
+                                rate,
+                                phyname
                                 ])
                 
         
 
-write_data_test(numslices_list=[10,15],
-                allconfig_list=[['C1'],['C3'],['C1','C3']],
-                filename="./testresult/testresult_per5_1.csv")
-       
+write_data_test(numslices_list=[20],
+                allconfig_list=[['k1'],['k2'],['k1','k2']],
+                phyname_list=["Abilene","Atlanta","Polska"],
+                filename="./testresult/testresult_per5_20.csv")
+    
     
     
     

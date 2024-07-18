@@ -9,18 +9,20 @@ import os
 import pickle
 
 def SolveSE_FullFelx(numslices : int,
-                     config_list : list) -> tuple:
+                     config_list : list,
+                     phyname : str) -> tuple:
     
     numconf = len(config_list)
     # Create a physical network
-    PHY = CreatePHYGraph()
+    PHY = CreatePHYGraph(phyname=phyname)
 
     # Create a set of slices and configuration
     K = CreateSlicesSet(numslices=numslices,
                         numconf=numconf,
                         config_list=config_list)
     
-
+    print(len(PHY.nodes))
+    print(len(PHY.edges))
     # Write an ILP from these graph
     GraphMapping = ConvertToILP(PHY=PHY,
                                 K=K)
@@ -30,6 +32,8 @@ def SolveSE_FullFelx(numslices : int,
     GraphMapping.solve(solver=SOLVER)
 
     accept_slices = sum(pl.value(pis) for pis in GraphMapping.variables() if "pi" in pis.name)
+
+    objvalue = -pl.value(GraphMapping.objective)
 
     runtime = GraphMapping.solutionTime
 
@@ -41,7 +45,7 @@ def SolveSE_FullFelx(numslices : int,
         if GraphMapping.variablesDict()[f"pi_{s}"].varValue > 0.0:
             for k in range(len(K[s])):
                 rate[k] += (GraphMapping.variablesDict()[f"phi_{s}_{k}"].varValue)/numslices
-    return (accept_slices, runtime, rate)
+    return (accept_slices,objvalue ,runtime, rate, phyname)
 
     #with open(r"./solution.txt",'wb') as pk:
         # Pickling variablesDict
